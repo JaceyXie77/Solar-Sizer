@@ -117,6 +117,7 @@ export function startCompare(){
   state.viewMode='compare';state.drawerOpen=false;
   document.getElementById('collectionOverlay').classList.remove('open');
   document.getElementById('collectionDrawer').classList.remove('open');
+  renderAll();
 }
 
 // COMPARISON DIMENSIONS
@@ -288,6 +289,7 @@ export function renderComparePage(){
 
 export function exitCompare(){
   state.viewMode='catalog';
+  renderAll();
 }
 export function removeFromCompare(key){
   state.selectedItems.delete(key);
