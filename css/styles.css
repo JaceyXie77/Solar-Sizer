@@ -163,7 +163,52 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 
 @media(min-width:640px){.card-grid{grid-template-columns:1fr 1fr}.s2-summary{grid-template-columns:repeat(3,1fr);gap:20px}.s2-summary .result-card{padding:28px 24px}.summary-grid{grid-template-columns:1fr 1fr 1fr}.sys-type-grid{grid-template-columns:1fr 1fr 1fr 1fr}.step-mobile{display:none}.step-desktop.hidden-mobile{display:flex}.content-card{padding:32px}.form-row{grid-template-columns:1fr 1fr}}
 @media(min-width:640px) and (max-width:767px){.step-desktop{display:none!important}.step-mobile{display:flex}}
-@media(max-width:639px){.step-desktop{display:none}.step-mobile{display:flex}.landing-cards{grid-template-columns:1fr;gap:16px}.catalog-contact-bar{flex-direction:column;text-align:center}.ccb-actions{width:100%;justify-content:center}.form-row{grid-template-columns:1fr}}
+@media(max-width:639px){
+  .step-desktop{display:none}
+  .step-mobile{display:flex}
+  /* 1. Touch targets: minimum 44px for all buttons */
+  .btn{min-height:44px;height:auto;padding:0 16px}
+  .btn-sm{min-height:40px;height:auto;padding:0 14px}
+  /* 2. Compare cards: fluid width */
+  .compare-card-bottom{width:100%;max-width:280px;min-width:0}
+  /* 3. Wizard table: hint horizontal scroll */
+  .table-wrap{margin:0 -16px;border-radius:0;border-left:none;border-right:none}
+  .table-wrap::before{content:'\2190 Swipe to see more \2192';display:block;padding:8px 16px;font-size:11px;color:var(--slate-400);background:var(--slate-50);text-align:center}
+  /* 4. Catalog tabs: tighter spacing */
+  .catalog-tab{min-width:0;padding:12px 14px;font-size:13px}
+  .catalog-tabs{margin-bottom:16px}
+  /* 5. FAB & Bubble: prevent overlap */
+  .collection-fab{bottom:20px;right:16px;width:48px;height:48px;font-size:18px}
+  /* 6. Step indicator: compact */
+  .step-circle{width:36px;height:36px}
+  .step-circle svg{width:16px;height:16px}
+  .step-circle span{font-size:12px}
+  .step-label{font-size:11px;margin-top:6px}
+  .step-indicator{padding:16px 12px}
+  /* 7. Header: compact */
+  .header-inner{padding:10px 16px;gap:8px}
+  .header-logo-img{height:32px}
+  .header h1{font-size:17px}
+  .header p{font-size:11px}
+  /* 8. Catalog search/sort: full-width stacking */
+  .catalog-search-row{flex-direction:column;align-items:stretch}
+  .catalog-search-row .search-wrap{width:100%}
+  .catalog-search-row .sort-select,.catalog-search-row .filter-reset-btn{width:100%}
+  /* 9. Compare table: larger model names */
+  .cv-model{font-size:15px}
+  .compare-table{font-size:12px}
+  .compare-table th,.compare-table td{padding:8px 10px}
+  /* 10. Modal: tighter padding */
+  .modal-body{padding:16px}
+  .modal-header{padding:16px 16px 0}
+  .modal-header h3{font-size:16px}
+  .submit-btn{min-height:48px;height:auto}
+  /* existing mobile rules preserved */
+  .landing-cards{grid-template-columns:1fr;gap:16px}
+  .catalog-contact-bar{flex-direction:column;text-align:center}
+  .ccb-actions{width:100%;justify-content:center}
+  .form-row{grid-template-columns:1fr}
+}
 
 .pc-btn-disabled{opacity:0.45;cursor:not-allowed!important;pointer-events:none;filter:grayscale(0.5)}.pc-btn-disabled:hover{transform:none!important;box-shadow:none!important}
 /* Quick-add appliance presets */

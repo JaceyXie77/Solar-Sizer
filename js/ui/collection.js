@@ -265,7 +265,7 @@ export function renderComparePage(){
   h+=`</tbody></table></div>`;
   
   // Action row
-  h+=`<div class="mt-6" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">`;
+  h+=`<div class="mt-6" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;justify-content:center">`;
   items.forEach((i,idx)=>{
     const url=i.product.url||'';
     var pManual=findProductAny(i.model);
