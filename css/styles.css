@@ -188,7 +188,7 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
   /* Step indicator mobile: spread circles + connecting line */
   .step-mobile{justify-content:space-between;position:relative;padding:0 12px}
   .step-mobile::before{content:'';position:absolute;top:18px;left:calc(12px + 18px);right:calc(12px + 18px);height:2px;background:var(--slate-200);z-index:0}
-  .step-mobile-progress{position:absolute;top:18px;left:calc(12px + 18px);height:2px;background:linear-gradient(90deg,var(--orange-500),var(--orange-600));z-index:1;transition:width .5s ease}
+  .step-mobile-progress{position:absolute;top:18px;height:2px;background:linear-gradient(90deg,var(--orange-500),var(--orange-600));z-index:1;transition:width .5s ease,left .5s ease}
   /* 7. Header: compact */
   .header-inner{padding:10px 16px;gap:8px}
   .header-logo-img{height:32px}
@@ -218,6 +218,8 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
   .wiz-s1-actions{flex-direction:column;align-items:stretch;gap:8px}
   .wiz-s1-actions .btn{width:100%}
   .wiz-s1-actions .total-badge{justify-content:center}
+  /* Drawer: prevent idea bubble overlap on mobile */
+  .col-drawer-body{padding-bottom:56px}
 }
 
 .pc-btn-disabled{opacity:0.45;cursor:not-allowed!important;pointer-events:none;filter:grayscale(0.5)}.pc-btn-disabled:hover{transform:none!important;box-shadow:none!important}
@@ -297,22 +299,6 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .cv-model{font-weight:700;font-size:14px;margin-bottom:4px}
 .cv-remove{font-size:11px;color:var(--slate-400);cursor:pointer;background:none;border:none;text-decoration:underline}
 .cv-remove:hover{color:var(--red-500)}
-/* Mobile compare cards */
-.compare-mobile{display:none}
-@media(max-width:639px){
-  .compare-wrap{display:none}
-  .compare-mobile{display:flex;flex-direction:column;gap:16px}
-  .cmp-mob-card{background:var(--white);border:1px solid var(--slate-200);border-radius:12px;overflow:hidden}
-  .cmp-mob-header{padding:14px 16px;background:var(--slate-50);border-bottom:1px solid var(--slate-200);display:flex;flex-direction:column;gap:2px}
-  .cmp-mob-model{font-size:15px;font-weight:700;color:var(--slate-900)}
-  .cmp-mob-row{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid var(--slate-50);font-size:13px}
-  .cmp-mob-row.cmp-mob-best{background:var(--green-50)}
-  .cmp-mob-row.cmp-mob-best .cmp-mob-val{color:var(--green-700);font-weight:600}
-  .cmp-mob-label{color:var(--slate-500);font-weight:500}
-  .cmp-mob-val{color:var(--slate-700);font-weight:600;text-align:right}
-  .cmp-mob-actions{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px}
-  .cmp-mob-actions .btn{font-size:12px;height:34px}
-}
 .cf-product-preview{margin-bottom:12px;padding:12px;background:var(--slate-50);border-radius:8px}
 .cf-product-preview h4{font-size:12px;font-weight:600;color:var(--slate-600);margin-bottom:6px}
 .cf-product-tags{display:flex;flex-wrap:wrap;gap:4px}
@@ -321,7 +307,7 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .cf-product-tag .cf-tag-remove:hover{background:var(--red-200);color:var(--red-600)}
 
 /* ===== Idea Lab Floating Widget ===== */
-.idea-bubble{position:fixed;bottom:32px;left:32px;z-index:9998;display:flex;align-items:center;gap:8px;padding:12px 20px;background:linear-gradient(135deg,var(--orange-600),#ea580c);color:var(--white);border:none;border-radius:28px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(234,88,12,.35);transition:transform .2s,box-shadow .2s;animation:ideaPulse 8s ease-in-out infinite;font-family:inherit}
+.idea-bubble{position:fixed;bottom:32px;left:32px;z-index:90;display:flex;align-items:center;gap:8px;padding:12px 20px;background:linear-gradient(135deg,var(--orange-600),#ea580c);color:var(--white);border:none;border-radius:28px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(234,88,12,.35);transition:transform .2s,box-shadow .2s;animation:ideaPulse 8s ease-in-out infinite;font-family:inherit}
 .idea-bubble:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(234,88,12,.45)}
 .idea-bubble-text{white-space:nowrap}
 @keyframes ideaPulse{0%,100%{box-shadow:0 4px 20px rgba(234,88,12,.35)}50%{box-shadow:0 4px 28px rgba(234,88,12,.55);transform:scale(1.02)}}
@@ -358,4 +344,4 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .idea-success h3{font-size:18px;color:var(--slate-900);margin:0 0 8px}
 .idea-success p{font-size:14px;color:var(--slate-500);line-height:1.6;margin-bottom:24px}
 .idea-success .idea-submit-btn{width:auto;padding:0 28px}
-@media(max-width:480px){.idea-bubble{bottom:20px;left:16px;padding:10px 16px;font-size:13px}.idea-panel{width:100vw}}
+@media(max-width:480px){.idea-bubble{bottom:12px;left:6px;padding:6px 12px;font-size:11px;border-radius:16px;gap:3px;box-shadow:0 2px 10px rgba(234,88,12,.28);animation:none}.idea-panel{width:100vw}}

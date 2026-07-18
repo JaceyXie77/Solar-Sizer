@@ -56,9 +56,17 @@ export function renderSI() {
   // Mobile progress line
   var mpEl = document.createElement('div');
   mpEl.className = 'step-mobile-progress';
-  var pct = state.currentStep <= 1 ? 0 : Math.round((state.currentStep - 1) / (st.length - 1) * 100);
-  mpEl.style.width = pct + '%';
+  mpEl.style.width = '0px';
   m.appendChild(mpEl);
+  requestAnimationFrame(function() {
+    const mItems = m.querySelectorAll('.step-item');
+    if (mItems.length > 1 && cs > 1 && cs - 1 < mItems.length) {
+      const mC0 = mItems[0].offsetLeft + mItems[0].offsetWidth / 2;
+      const mCt = mItems[cs - 1].offsetLeft + mItems[cs - 1].offsetWidth / 2;
+      mpEl.style.left = mC0 + 'px';
+      mpEl.style.width = (mCt - mC0) + 'px';
+    }
+  });
   const items = d.querySelectorAll('.step-item'), cs = state.currentStep, tgtIdx = cs - 1;
   if (items.length > 1 && tgtIdx >= 1 && tgtIdx < items.length) {
     var c0 = items[0].offsetLeft + items[0].offsetWidth / 2;

@@ -264,32 +264,6 @@ export function renderComparePage(){
   
   h+=`</tbody></table></div>`;
 
-  // Mobile card layout
-  h+=`<div class="compare-mobile">`;
-  items.forEach((i,idx)=>{
-    const url=i.product.url||'';
-    var pManual=findProductAny(i.model);
-    var pCat=i.cat;
-    var manualUrl=(pManual&&pCat)?getManualUrl(pCat,pManual):folderUrl(MANUAL_TREE._id);
-    h+=`<div class="cmp-mob-card"><div class="cmp-mob-header"><span class="cmp-mob-model">${esc(i.model)}</span><span style="font-size:11px;color:var(--slate-400)">${getCollectionSummary(i.cat,i.product)}</span></div>`;
-    fields.forEach(f=>{
-      const v=i.product[f.key]||'\u2014';
-      let cls='';
-      if(f.better&&bests[f.key]!==undefined){
-        const nv=extractNum(String(v));
-        if(nv>0&&nv===bests[f.key])cls=' cmp-mob-best';
-      }
-      h+=`<div class="cmp-mob-row${cls}"><span class="cmp-mob-label">${f.label}</span><span class="cmp-mob-val">${String(v)}</span></div>`;
-    });
-    h+=`<div class="cmp-mob-actions">`;
-    h+=`<button class="btn btn-sm btn-primary" onclick="openContact('${esc(i.model)}')">Inquire</button>`;
-    if(url)h+=`<a href="${url}" target="_blank" rel="noopener" class="btn btn-sm">Product Page</a>`;
-    else h+=`<button class="btn btn-sm btn-ghost" disabled style="opacity:.5;cursor:default">Coming Soon</button>`;
-    h+=`<a href="${manualUrl}" target="_blank" rel="noopener" class="btn btn-sm btn-ghost">Manual</a>`;
-    h+=`<button class="btn btn-sm btn-ghost" onclick="removeFromCompare('${i.cat}|${esc(i.model)}')">Remove</button></div></div>`;
-  });
-  h+=`</div>`;
-  
   // Action row
   h+=`<div class="mt-6" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;justify-content:center">`;
   items.forEach((i,idx)=>{
