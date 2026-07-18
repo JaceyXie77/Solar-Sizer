@@ -20,7 +20,7 @@ export function renderCTabs(){
   const tabs=[{id:'inverters',label:'Inverters'},{id:'lithium',label:'Lithium Batteries'},{id:'ess',label:'Energy Storage System (ESS)'},{id:'controllers',label:'Controllers'}];
   return `<div class="catalog-tabs">${tabs.map(t=>`<button class="catalog-tab ${state.catalogTab===t.id?'active':''}" onclick="setCTab('${t.id}')">${t.label}</button>`).join('')}</div>`;
 }
-export function setCTab(t){try{state.catalogTab=t;renderCat()}catch(e){console.error('setCTab error:',e);alert('Error switching tab: '+e.message)}}
+export function setCTab(t){try{state.catalogTab=t;renderCat();var at=document.querySelector('.catalog-tab.active');if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}catch(e){console.error('setCTab error:',e);alert('Error switching tab: '+e.message)}}
 
 export function renderCFilters(){
   const tab=state.catalogTab,f=state.catalogFilters[tab];
