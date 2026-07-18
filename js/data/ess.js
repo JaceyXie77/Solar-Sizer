@@ -1,0 +1,6 @@
+export const CAT_ESS = [
+ {"m": "POW-ESS12.5KW-SP", "st": "us", "t": "Split-phase", "ov": "120/240Vac", "rp": 12500, "pkw": "12.5 kW", "sv": "48V", "bc": "16kWh", "pv": "9000W \u00d7 2", "voc": "500 Vdc \u00d7 2", "cc": "200A", "sz": "584\u00d7196\u00d71850mm", "wt": "169.2kg", "url": "https://powmr.com/products/all-in-one-ess-16kwh-12-5kw-110-240vac-split-phase", "man": "", "ip": "IP20 (Indoor Use)"},
+ {"m": "POW-ESS3.6K-5KWH", "st": "eu", "t": "Single phase", "ov": "230Vac\u00b15%", "rp": 3600, "pkw": "3.6 kW", "sv": "24V", "bc": "5kWh", "pv": "5000W", "voc": "500 Vdc", "cc": "100A", "sz": "440\u00d7245\u00d7760mm", "wt": "50.6kg", "url": "", "man": "", "ip": "IP20 (Indoor Use)"},
+ {"m": "POW-ESS5K-8KWH", "st": "eu", "t": "Single phase", "ov": "230Vac\u00b15%", "rp": 5000, "pkw": "5 kW", "sv": "24V", "bc": "8kWh", "pv": "9000W", "voc": "500 Vdc", "cc": "160A", "sz": "440\u00d7246\u00d7760mm", "wt": "70.4kg", "url": "", "man": "", "ip": "IP20 (Indoor Use)"},
+ {"m": "POW-ESS6K-16KWH", "st": "eu", "t": "Single phase", "ov": "230Vac\u00b15%", "rp": 6000, "pkw": "6 kW", "sv": "48V", "bc": "16kWh", "pv": "9000W", "voc": "500Vdc", "cc": "120A", "sz": "540\u00d7515\u00d7895mm", "wt": "131.9kg", "url": "", "man": "", "ip": "IP20 (Indoor Use)"},
+];

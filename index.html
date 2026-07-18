@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepFind &mdash; PowMr Solar System Sizer &amp; Product Catalog</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="header"><div class="container header-inner"><img src="assets/powmr-logo.png" alt="DeepFind Logo" class="header-logo-img" onclick="goL()"><div><h1>DeepFind</h1><p>PowMr Solar System Sizer &amp; Professional Product Catalog</p></div></div></header>
+
+<div class="step-indicator" id="stepIndicatorWrap"><div class="step-desktop" id="stepDesktop"><div class="step-progress" id="stepProgress" style="width:0%"></div></div><div class="step-mobile" id="stepMobile"></div></div>
+
+<main class="main"><div class="container-wide" id="contentArea"></div></main>
+
+<footer class="footer"><div class="container"><p>&copy; 2026 DeepFind. Powered by PowMr Solar.</p><p><a href="mailto:support@powmr.com" style="color:var(--blue-600);text-decoration:none">support@powmr.com</a> &nbsp;|&nbsp; <a href="https://drive.google.com/drive/folders/1jp287yyv_JJWF-LjH7ExCvCwg5Muu85Y?usp=drive_link" target="_blank" style="color:var(--blue-600);text-decoration:none">&#x1F4C4; Product Manuals (Google Drive)</a></p></div></footer>
+
+<!-- Contact Modal -->
+<div class="modal-overlay" id="contactModal" onclick="onModalBackdrop(event)">
+<div class="modal-box" onclick="event.stopPropagation()">
+<div class="modal-header"><h3>GET A QUOTE / CONTACT US</h3><button class="modal-close" onclick="closeContactModal()">&times;</button></div>
+<div class="modal-body">
+<p style="font-size:13px;color:var(--slate-500);margin-bottom:16px">With the growing demand for sustainable energy, we are eager to add reliable, top-quality products to the market with you. Don't hesitate to contact us :)</p>
+<form class="contact-form" id="contactForm" onsubmit="submitContactForm(event)" action="https://formspree.io/f/meebdrne" method="POST">
+<div class="form-row"><div class="form-group"><label>Name *</label><input type="text" id="cfName" name="name" placeholder="Your name" required></div><div class="form-group"><label>E-mail *</label><input type="email" id="cfEmail" name="email" placeholder="your@email.com" required></div></div>
+<div class="form-group" id="cfProductGroup"><label>Product</label><input type="text" id="cfProduct" name="product" placeholder="Product model name">
+<input type="hidden" name="product_list" id="cfProductList">
+<div id="cfProductPreview" style="display:none"></div></div>
+<div class="form-group"><label>Country</label><input type="text" id="cfCountry" name="country" placeholder="Your country"></div>
+<div class="form-group"><label>WhatsApp / Phone</label><input type="tel" id="cfPhone" name="phone" placeholder="+xx xxx xxxx"></div>
+<div class="form-group"><label>Message</label><textarea id="cfMessage" name="message" placeholder="Tell us about your project..."></textarea></div>
+<button type="submit" class="submit-btn" id="submitBtn">Send Inquiry &rarr;</button>
+</form>
+<p style="text-align:center;margin-top:14px;font-size:13px;color:var(--slate-400)">Or email us directly: <a href="mailto:support@powmr.com" style="color:var(--blue-600);font-weight:600">support@powmr.com</a></p>
+</div></div>
+</div>
+
+<!-- Collection Drawer -->
+<div class="collection-overlay" id="collectionOverlay" onclick="closeDrawer()"></div>
+<div class="collection-drawer" id="collectionDrawer">
+<div class="col-drawer-header"><h3>Your Collection</h3><button class="modal-close" onclick="closeDrawer()">&times;</button></div>
+<div class="col-drawer-body" id="colDrawerBody"></div>
+<div class="col-drawer-footer" id="colDrawerFooter"></div>
+</div>
+<button class="collection-fab" id="collectionFab" onclick="openDrawer()" style="display:none">&#x2605;<span class="col-badge" id="colBadge" style="display:none">0</span></button>
+
+<!-- Single Entry Point: loads all modules and bootstraps the app -->
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
