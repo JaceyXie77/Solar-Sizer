@@ -53,6 +53,12 @@ export function renderSI() {
     dd.innerHTML = '<div class="step-circle ' + (c ? 'completed' : cur ? 'current' : 'future') + '">' + (c ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : s) + '</div>';
     m.appendChild(dd);
   });
+  // Mobile progress line
+  var mpEl = document.createElement('div');
+  mpEl.className = 'step-mobile-progress';
+  var pct = state.currentStep <= 1 ? 0 : Math.round((state.currentStep - 1) / (st.length - 1) * 100);
+  mpEl.style.width = pct + '%';
+  m.appendChild(mpEl);
   const items = d.querySelectorAll('.step-item'), cs = state.currentStep, tgtIdx = cs - 1;
   if (items.length > 1 && tgtIdx >= 1 && tgtIdx < items.length) {
     var c0 = items[0].offsetLeft + items[0].offsetWidth / 2;
@@ -91,15 +97,15 @@ function rendS1(trp) {
   h += '<div class="flex flex-wrap items-center gap-4 wiz-s1-row"><label class="whitespace-nowrap">Voltage Standard</label><select onchange="setVS(this.value)">' + Object.entries(VOLTAGE_LABELS).map(function(kv) { return '<option value="' + kv[0] + '" ' + (state.voltageStandard === kv[0] ? 'selected' : '') + '>' + kv[1] + '</option>'; }).join('') + '</select></div>';
   h += rendLT('Single-phase Appliances', it, true);
   h += '<div class="flex items-center justify-between wiz-s1-actions"><button class="btn btn-sm" onclick="addLI()"><svg class="icon-md mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Appliance</button><div class="total-badge">' + tBG(sr, 'Single-phase Total') + '</div></div>';
-  h += '<div class="preset-label">Quick Add:</div><div class="preset-chips">' + QUICK_APPLIANCES.map(function(a) { return '<span class="preset-chip" onclick="qAdd(\'' + a.name + '\',' + a.power + ',' + a.hoursPerDay + ',' + a.surge + ',' + a.running + ')">' + a.icon + ' ' + a.name + ' <span class="chip-watts">' + (a.power >= 1000 ? (a.power / 1000).toFixed(1) + 'kW' : a.power + 'W') + '</span></span>'; }).join('') + '</div>';
+  h += '<div class="preset-label">Quick Add:</div><div class="preset-chips">' + QUICK_APPLIANCES.map(function(a) { return '<span class="preset-chip" onclick="qAdd(\'' + a.name + '\',' + a.power + ',' + a.hoursPerDay + ',' + a.surge + ',' + a.running + ')">' + a.name + ' <span class="chip-watts">' + (a.power >= 1000 ? (a.power / 1000).toFixed(1) + 'kW' : a.power + 'W') + '</span></span>'; }).join('') + '</div>';
   if (mv.length) {
     const se = state.showMultiPhase;
-    h += '<div class="multi-phase-section"><button class="btn btn-sm mp-toggle" onclick="togMP()">' + (se ? '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"/></svg>' : '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>') + '<svg class="icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' + (se ? 'Hide Split-phase / 3-Phase' : 'Add Split-phase / 3-Phase Appliances') + '</button>';
+    h += '<div class="multi-phase-section"><button class="btn btn-sm mp-toggle" onclick="togMP()">' + (se ? '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"/></svg>' : '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>') + (se ? 'Hide Split-phase / 3-Phase' : 'Add Split-phase / 3-Phase Appliances') + '</button>';
     if (se) {
       h += '<div class="mt-3 p-3 bg-orange-50 rounded-lg border border-orange-200"><label class="text-sm font-medium text-slate-700 mr-4">Multi-phase Voltage</label><select onchange="setMPV(this.value)">' + mv.map(function(v) { return '<option value="' + v.value + '" ' + (state.multiPhaseVoltage === v.value ? 'selected' : '') + '>' + v.label + '</option>'; }).join('') + '</select><span class="text-xs text-slate-400 ml-3">' + gMPH(state.multiPhaseVoltage) + '</span></div>';
       h += rendLT('Split-phase / 3-Phase Appliances', state.multiPhaseItems, false);
       h += '<div class="flex items-center justify-between wiz-s1-actions"><button class="btn btn-sm" onclick="addMPI()"><svg class="icon-md mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Multi-phase Appliance</button><div class="total-badge">' + tBG(mr, 'Multi-phase Total') + '</div></div>';
-      h += '<div class="preset-label">Quick Add:</div><div class="preset-chips">' + QUICK_MP_APPLIANCES.map(function(a) { return '<span class="preset-chip" onclick="qAddMP(\'' + a.name + '\',' + a.power + ',' + a.hoursPerDay + ',' + a.surge + ',' + a.running + ')">' + a.icon + ' ' + a.name + ' <span class="chip-watts">' + (a.power >= 1000 ? (a.power / 1000).toFixed(1) + 'kW' : a.power + 'W') + '</span></span>'; }).join('') + '</div>';
+      h += '<div class="preset-label">Quick Add:</div><div class="preset-chips">' + QUICK_MP_APPLIANCES.map(function(a) { return '<span class="preset-chip" onclick="qAddMP(\'' + a.name + '\',' + a.power + ',' + a.hoursPerDay + ',' + a.surge + ',' + a.running + ')">' + a.name + ' <span class="chip-watts">' + (a.power >= 1000 ? (a.power / 1000).toFixed(1) + 'kW' : a.power + 'W') + '</span></span>'; }).join('') + '</div>';
     }
     h += '</div>';
   }
@@ -119,7 +125,7 @@ function rendLT(ti, it, sp) {
 }
 
 function tBG(w, l) {
-  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="label">' + l + ':</span><span class="value">' + w.toLocaleString() + '</span><span>W</span>';
+  return '<span class="label">' + l + ':</span><span class="value">' + w.toLocaleString() + '</span><span>W</span>';
 }
 
 function gMPH(v) {
@@ -224,7 +230,7 @@ function rendS4(inv, bat) {
   const invModels = inv.recommendedModels.map(function(m) { return m.model + (m.units > 1 ? ' x' + m.units : ''); }).join(', ') || 'N/A';
   const batModels = bat.recommendedSolutions.map(function(s) { const u = Math.max(1, Math.ceil(bat.requiredAh / s.ah)); return (s.displayModel || s.model) + ' x' + u + (s.series ? ' strings (' + (u * s.series) + ' total)' : ''); }).join(', ') || 'N/A';
   h += '<div class="quote-card mt-2"><div class="quote-title"><svg class="icon-lg text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Request a Quote for Your System</div><p class="quote-desc">Our team will recommend the best pricing and setup based on your configuration above.</p><form id="cEndForm" onsubmit="submitCForm(event)" action="https://formspree.io/f/meebdrne" method="POST"><div class="form-row"><div class="form-group"><label>Name *</label><input type="text" name="name" placeholder="Your name" required></div><div class="form-group"><label>E-mail *</label><input type="email" name="email" placeholder="your@email.com" required></div></div><div class="form-row"><div class="form-group"><label>Country</label><input type="text" name="country" placeholder="Your country"></div><div class="form-group"><label>WhatsApp / Phone</label><input type="tel" name="phone" placeholder="+xx xxx xxxx"></div></div><div class="form-group"><label>Additional Notes</label><textarea name="message" placeholder="Any specific requirements or questions..."></textarea></div><input type="hidden" name="_subject" value="C-End System Sizer - Quote Request"><input type="hidden" name="system_summary" id="cSysSum" value=""><button type="submit" class="submit-btn" id="cSubmitBtn">Get My Quote \u2192</button></form></div>';
-  h += '<div class="flex flex-wrap gap-3 pt-2" style="flex-direction:row"><button class="btn btn-blue btn-lg" style="flex:1;min-width:200px" onclick="window.open(\'https://www.powmr.com\',\'_blank\')">\uD83C\uDF10 View Products on PowMr.com</button><button class="btn btn-lg" onclick="dlR()">\uD83D\uDCC5 Download Result</button></div><div class="flex flex-wrap items-center gap-4 pt-3 text-sm text-slate-500"><label class="whitespace-nowrap">Report Timezone:</label><select onchange="state.timezone=this.value" class="select-sm">' + COMMON_TIMEZONES.map(function(tz) { return '<option value="' + tz.value + '" ' + (state.timezone === tz.value ? 'selected' : '') + '>' + tz.label + '</option>'; }).join('') + '</select></div></div>';
+  h += '<div class="flex flex-wrap gap-3 pt-2" style="flex-direction:row"><button class="btn btn-blue btn-lg" style="flex:1;min-width:200px" onclick="window.open(\'https://www.powmr.com\',\'_blank\')">View Products on PowMr.com</button><button class="btn btn-lg" style="flex:1;min-width:200px" onclick="dlR()">Download Result</button></div><div class="flex flex-wrap items-center gap-4 pt-3 text-sm text-slate-500" style="width:100%"><label class="whitespace-nowrap">Report Timezone:</label><select onchange="state.timezone=this.value" class="select-sm">' + COMMON_TIMEZONES.map(function(tz) { return '<option value="' + tz.value + '" ' + (state.timezone === tz.value ? 'selected' : '') + '>' + tz.label + '</option>'; }).join('') + '</select></div></div>';
   return h;
 }
 
@@ -338,16 +344,19 @@ export function setST(t) {
 export function goW() {
   state.viewMode = 'wizard';
   if (typeof window.renderAll === 'function') window.renderAll();
+  scrollToTop();
 }
 
 export function goL() {
   state.viewMode = 'landing';
   if (typeof window.renderAll === 'function') window.renderAll();
+  scrollToTop();
 }
 
 export function goC() {
   state.viewMode = 'catalog';
   if (typeof window.renderAll === 'function') window.renderAll();
+  scrollToTop();
 }
 
 export function resetAll() {

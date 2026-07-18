@@ -4,9 +4,9 @@ export const STEP_TITLES = ['Your Power Needs','Choose Inverter','Choose Battery
 
 export const PRESET_OPTIONS = [{value:'home_backup',label:'Home Backup'},{value:'rv_van',label:'RV / Van'},{value:'off_grid_cabin',label:'Off-grid Cabin'},{value:'small_business',label:'Small Business'},{value:'tiny_house',label:'Tiny House'},{value:'boat_marine',label:'Boat / Marine'},{value:'custom',label:'Custom'}];
 
-export const QUICK_APPLIANCES = [{icon:'\uD83E\uDDCA',name:'Refrigerator',power:200,hoursPerDay:24,surge:true,running:true},{icon:'\uD83D\uDCA1',name:'LED Lights',power:15,hoursPerDay:6,surge:false,running:true},{icon:'\uD83D\uDCFA',name:'TV',power:100,hoursPerDay:4,surge:false,running:false},{icon:'\uD83C\uDF0A',name:'Microwave',power:1000,hoursPerDay:0.5,surge:true,running:false},{icon:'\uD83D\uDCBB',name:'Computer',power:300,hoursPerDay:4,surge:false,running:false},{icon:'\uD83C\uDF00',name:'Ceiling Fan',power:75,hoursPerDay:8,surge:false,running:true}];
+export const QUICK_APPLIANCES = [{name:'Refrigerator',power:200,hoursPerDay:24,surge:true,running:true},{name:'LED Lights',power:15,hoursPerDay:6,surge:false,running:true},{name:'TV',power:100,hoursPerDay:4,surge:false,running:false},{name:'Microwave',power:1000,hoursPerDay:0.5,surge:true,running:false},{name:'Computer',power:300,hoursPerDay:4,surge:false,running:false},{name:'Ceiling Fan',power:75,hoursPerDay:8,surge:false,running:true}];
 
-export const QUICK_MP_APPLIANCES = [{icon:'\uD83D\uDD25',name:'Water Heater',power:3000,hoursPerDay:2,surge:true,running:false},{icon:'\u2744\uFE0F',name:'Large AC',power:2500,hoursPerDay:4,surge:true,running:false},{icon:'\uD83D\uDE97',name:'EV Charger',power:7200,hoursPerDay:2,surge:false,running:false},{icon:'\u2699\uFE0F',name:'Industrial Motor',power:5000,hoursPerDay:2,surge:true,running:false}];
+export const QUICK_MP_APPLIANCES = [{name:'Water Heater',power:3000,hoursPerDay:2,surge:true,running:false},{name:'Large AC',power:2500,hoursPerDay:4,surge:true,running:false},{name:'EV Charger',power:7200,hoursPerDay:2,surge:false,running:false},{name:'Industrial Motor',power:5000,hoursPerDay:2,surge:true,running:false}];
 
 export const VOLTAGE_LABELS = {eu:'EU Standard (220/230/240V)',us:'US Standard (100/105/110/115/120/127V)'};
 
