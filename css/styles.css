@@ -198,10 +198,12 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
   .catalog-search-row{flex-direction:column;align-items:stretch}
   .catalog-search-row .search-wrap{width:100%}
   .catalog-search-row .sort-select,.catalog-search-row .filter-reset-btn{width:100%}
-  /* 9. Compare table: larger model names */
+  /* 9. Compare table: larger model names + scroll hint */
   .cv-model{font-size:15px}
   .compare-table{font-size:12px}
   .compare-table th,.compare-table td{padding:8px 10px}
+  .compare-wrap{position:relative;margin:0 -16px}
+  .compare-wrap::before{content:'\2190 Swipe to compare \2192';display:block;padding:8px 16px;font-size:11px;color:var(--slate-400);background:var(--slate-50);text-align:center}
   /* 10. Modal: tighter padding */
   .modal-body{padding:16px}
   .modal-header{padding:16px 16px 0}
@@ -292,6 +294,15 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .compare-table thead th:first-child{text-align:left}
 .compare-table td{text-align:center}
 .compare-table .cv-best{background:var(--green-50);color:var(--green-700);font-weight:600;border-radius:2px}
+/* Zebra striping for readability */
+.compare-table tbody tr:nth-child(even) td{background:var(--slate-50)}
+.compare-table tbody tr:nth-child(even) td:first-child{background:var(--slate-100)}
+/* Sticky column shadow */
+.compare-table td:first-child,.compare-table th:first-child{box-shadow:2px 0 4px rgba(0,0,0,.06)}
+/* Header card styling */
+.compare-table thead th{padding:16px 14px;border-bottom:3px solid var(--orange-200)}
+.compare-table thead th:not(:first-child){background:linear-gradient(180deg,var(--white),var(--slate-50))}
+.compare-table .cv-model{font-size:15px}
 .compare-card-bottom{width:240px;min-width:240px;padding:16px;background:var(--white);border:1px solid var(--slate-200);border-radius:10px;display:flex;flex-direction:column}
 .compare-card-model{font-weight:700;font-size:13px;color:var(--slate-900);margin-bottom:10px;text-align:center}
 .compare-actions{display:flex;gap:8px;justify-content:center;padding:10px 0;flex-wrap:wrap}
@@ -310,6 +321,9 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .idea-bubble{position:fixed;bottom:32px;left:32px;z-index:90;display:flex;align-items:center;gap:8px;padding:12px 20px;background:linear-gradient(135deg,var(--orange-600),#ea580c);color:var(--white);border:none;border-radius:28px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(234,88,12,.35);transition:transform .2s,box-shadow .2s;animation:ideaPulse 8s ease-in-out infinite;font-family:inherit}
 .idea-bubble:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(234,88,12,.45)}
 .idea-bubble-text{white-space:nowrap}
+.idea-bubble-icon{display:none;font-size:18px;line-height:1}
+.idea-bubble-intro{animation:ideaBounce 0.6s ease 3}
+@keyframes ideaBounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px) scale(1.05)}60%{transform:translateY(0) scale(1)}}
 @keyframes ideaPulse{0%,100%{box-shadow:0 4px 20px rgba(234,88,12,.35)}50%{box-shadow:0 4px 28px rgba(234,88,12,.55);transform:scale(1.02)}}
 .idea-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .3s}
 .idea-overlay.show{opacity:1;pointer-events:auto}
@@ -344,4 +358,4 @@ td{padding:8px 12px;border-bottom:1px solid var(--slate-100)}tr:hover td{backgro
 .idea-success h3{font-size:18px;color:var(--slate-900);margin:0 0 8px}
 .idea-success p{font-size:14px;color:var(--slate-500);line-height:1.6;margin-bottom:24px}
 .idea-success .idea-submit-btn{width:auto;padding:0 28px}
-@media(max-width:480px){.idea-bubble{bottom:12px;left:6px;padding:6px 12px;font-size:11px;border-radius:16px;gap:3px;box-shadow:0 2px 10px rgba(234,88,12,.28);animation:none}.idea-panel{width:100vw}}
+@media(max-width:480px){.idea-bubble{bottom:20px;left:16px;width:48px;height:48px;padding:0;border-radius:50%;gap:0;box-shadow:0 4px 16px rgba(234,88,12,.4);animation:ideaPulse 4s ease-in-out infinite}.idea-bubble-text{display:none}.idea-bubble-icon{display:flex;align-items:center;justify-content:center;font-size:22px}.idea-panel{width:100vw}}

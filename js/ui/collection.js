@@ -285,6 +285,7 @@ export function renderComparePage(){
   
   document.getElementById('contentArea').className='container-wide';
   document.getElementById('contentArea').innerHTML=h;
+  window.scrollTo(0,0);
 }
 
 export function exitCompare(){

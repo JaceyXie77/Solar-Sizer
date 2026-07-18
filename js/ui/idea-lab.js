@@ -32,10 +32,18 @@ export function initIdeaBubble() {
   const b = document.createElement('button');
   b.id = 'ideaBubble';
   b.className = 'idea-bubble';
-  b.innerHTML = '<span class="idea-bubble-text">Share Your Ideas</span>';
+  b.innerHTML = '<span class="idea-bubble-icon">\uD83D\uDCA1</span><span class="idea-bubble-text">Share Your Ideas</span>';
   b.title = 'Your idea could shape our next product.';
   b.onclick = openIdeaPanel;
   document.body.appendChild(b);
+
+  // One-time attention bounce for first-time visitors
+  try {
+    if (!localStorage.getItem('powmr_idea_seen')) {
+      b.classList.add('idea-bubble-intro');
+      setTimeout(function() { b.classList.remove('idea-bubble-intro'); }, 2000);
+    }
+  } catch(e) {}
 
   const o = document.createElement('div');
   o.id = 'ideaOverlay';
@@ -54,6 +62,7 @@ export function openIdeaPanel() {
   document.getElementById('ideaOverlay').classList.add('show');
   document.getElementById('ideaPanel').classList.add('open');
   document.body.style.overflow = 'hidden';
+  try { localStorage.setItem('powmr_idea_seen', '1'); } catch(e) {}
   if (!_ideaPlcTmr) { _ideaPlcTmr = setInterval(rotatePlc, 4000); }
   restoreIdeaDraft();
 }
