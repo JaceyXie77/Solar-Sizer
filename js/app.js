@@ -17,8 +17,6 @@ import { LOAD_PRESETS, PRESET_OPTIONS, STEP_TITLES, QUICK_APPLIANCES, QUICK_MP_A
 
 // ── Logic ──
 import * as calc from './logic/calculator.js';
-import * as recommendation from './logic/recommendation.js';
-import * as loadAnalysis from './logic/load-analysis.js';
 import * as volt from './logic/voltage.js';
 import * as filters from './logic/filters.js';
 import * as manuals from './logic/manuals.js';
@@ -32,10 +30,8 @@ import * as landing from './ui/landing.js';
 import * as wizard from './ui/wizard.js';
 import * as catalog from './ui/catalog.js';
 import * as collection from './ui/collection.js';
-import { updateColBadge, renderAll } from './ui/collection.js';
 import * as contact from './ui/contact.js';
 import * as ideaLab from './ui/idea-lab.js';
-import { initIdeaBubble } from './ui/idea-lab.js';
 
 // ═══════════════════════════════════════════
 // Mount everything to window for inline onclick
@@ -62,8 +58,6 @@ window.COMMON_TIMEZONES = COMMON_TIMEZONES;
 
 // Logic — mount all exports
 Object.assign(window, calc);
-Object.assign(window, recommendation);
-Object.assign(window, loadAnalysis);
 Object.assign(window, volt);
 Object.assign(window, filters);
 Object.assign(window, manuals);
