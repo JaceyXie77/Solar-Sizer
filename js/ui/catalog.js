@@ -4,7 +4,7 @@
 
 import { state } from '../state.js';
 import { esc, lowCTA } from '../utils/helpers.js';
-import { getFiltered, getAvailCounts, applySingleFilter, optEl } from '../logic/filters.js';
+import { getFiltered, getAvailCounts, applySingleFilter, optEl, getLockState } from '../logic/filters.js';
 import { getManualUrl, folderUrl, MANUAL_TREE } from '../logic/manuals.js';
 import { CAT_INV_EU, CAT_INV_US } from '../data/inverters.js';
 import { CAT_BAT, CAT_CELLS } from '../data/batteries.js';
@@ -13,7 +13,7 @@ import { CAT_ESS } from '../data/ess.js';
 
 export function renderCat(){
   const area=document.getElementById('contentArea');area.className='container-wide';
-  area.innerHTML='<a class="back-link" onclick="window.goL()">\u2190 Back to Home</a>'+renderCTabs()+renderCFilters()+'<div id="catalog-products">'+renderCProds()+'</div>'+renderCCBar();
+  area.innerHTML='<a class="back-link" onclick="window.goL()">\u2190 Back to Home</a>'+renderCTabs()+'<div id="filterArea">'+renderCFilters()+'</div><div id="catalog-products">'+renderCProds()+'</div>'+renderCCBar();
   updateCCnt();
 }
 export function renderCTabs(){
@@ -22,27 +22,147 @@ export function renderCTabs(){
 }
 export function setCTab(t){try{state.catalogTab=t;renderCat();var at=document.querySelector('.catalog-tab.active');if(at)at.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}catch(e){console.error('setCTab error:',e);alert('Error switching tab: '+e.message)}}
 
+function lockChip(label, val, tab, key) {
+  return '<div class="filter-lock-chip" title="Only one option left based on current filters" onclick="showLockTip(\'' + key + '\',\'' + tab + '\')">' + val + '<span class="lock-icon">&#128274;</span></div>';
+}
+
+function filterGroupSelect(label, selectHTML) {
+  return '<div class="filter-group"><label>' + label + '</label>' + selectHTML + '</div>';
+}
+
+function filterGroupLocked(label, chipHTML) {
+  return '<div class="filter-group filter-group-locked"><label>' + label + '</label>' + chipHTML + '</div>';
+}
+
+export function showLockTip(key, tab) {
+  if (typeof window.toast !== 'function') return;
+  const hints = {
+    inverters: {
+      standard: 'Standard is locked because only one voltage standard has results with the current filters. Try clearing Type or IP Rating.',
+      type: 'Type is locked because only one inverter type remains with the current filters. Try clearing Standard or IP Rating.',
+      ip: 'IP Rating is locked because only one rating level remains. Try clearing Standard or Type.'
+    },
+    lithium: {
+      voltage: 'Voltage is locked because only one voltage level remains. Try clearing Battery Category.',
+      category: 'Battery Category is locked because only one category remains. Try clearing Voltage.'
+    },
+    controllers: {
+      type: 'Controller Type is locked because only one type remains. Clear other filters to unlock.'
+    },
+    ess: {
+      standard: 'Standard is locked. Clear other filters to unlock.'
+    }
+  };
+  const msg = (hints[tab] && hints[tab][key]) ? hints[tab][key] : 'This filter is locked because only one option remains with the current combination. Clear other filters to unlock more options.';
+  window.toast(msg, 'info');
+}
+
 export function renderCFilters(){
   const tab=state.catalogTab,f=state.catalogFilters[tab];
-  const srchHTML=`<div class="catalog-search-row"><div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Search by model..." value="${f.search||''}" oninput="setCF('search',this.value)" id="catalogSearchInput">${f.search?`<button class="search-clear" onclick="clearSearch()" title="Clear search">&times;</button>`:''}</div><select class="sort-select" onchange="setCF('sort',this.value)"><option value="" ${f.sort===''?'selected':''}>Sort: Default</option>${tab==='inverters'?`<option value="power-asc" ${f.sort==='power-asc'?'selected':''}>Power \u2191</option><option value="power-desc" ${f.sort==='power-desc'?'selected':''}>Power \u2193</option>`:tab==='lithium'?`<option value="ah-asc" ${f.sort==='ah-asc'?'selected':''}>Capacity \u2191</option><option value="ah-desc" ${f.sort==='ah-desc'?'selected':''}>Capacity \u2193</option>`:tab==='ess'?`<option value="kwh-asc" ${f.sort==='kwh-asc'?'selected':''}>Energy \u2191</option><option value="kwh-desc" ${f.sort==='kwh-desc'?'selected':''}>Energy \u2193</option>`:`<option value="current-asc" ${f.sort==='current-asc'?'selected':''}>Current \u2191</option><option value="current-desc" ${f.sort==='current-desc'?'selected':''}>Current \u2193</option>`}</select><button class="filter-reset-btn" onclick="resetFilters()" title="Reset all filters">\u21ba Reset</button></div>`;
+  const srchHTML='<div class="catalog-search-row"><div class="search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Search by model..." value="'+(f.search||'')+'" oninput="setCF(\'search\',this.value)" id="catalogSearchInput">'+(f.search?'<button class="search-clear" onclick="clearSearch()" title="Clear search">&times;</button>':'')+'</div><select class="sort-select" onchange="setCF(\'sort\',this.value)"><option value="" '+(f.sort===''?'selected':'')+'>Sort: Default</option>'+(tab==='inverters'?'<option value="power-asc" '+(f.sort==='power-asc'?'selected':'')+'>Power \u2191</option><option value="power-desc" '+(f.sort==='power-desc'?'selected':'')+'>Power \u2193</option>':tab==='lithium'?'<option value="ah-asc" '+(f.sort==='ah-asc'?'selected':'')+'>Capacity \u2191</option><option value="ah-desc" '+(f.sort==='ah-desc'?'selected':'')+'>Capacity \u2193</option>':tab==='ess'?'<option value="kwh-asc" '+(f.sort==='kwh-asc'?'selected':'')+'>Energy \u2191</option><option value="kwh-desc" '+(f.sort==='kwh-desc'?'selected':'')+'>Energy \u2193</option>':'<option value="current-asc" '+(f.sort==='current-asc'?'selected':'')+'>Current \u2191</option><option value="current-desc" '+(f.sort==='current-desc'?'selected':'')+'>Current \u2193</option>')+'</select><button class="filter-reset-btn" onclick="resetFilters()" title="Reset all filters">\u21ba Reset</button></div>';
 
-  if(tab==='inverters'){
-    const tC=getAvailCounts('inverters','type'),ipC=getAvailCounts('inverters','ip');
-    return srchHTML+`<div class="catalog-filters"><div class="filter-group"><label>Standard</label><select onchange="setCF('standard',this.value)"><option value="" ${f.standard===''?'selected':''}>All Standards</option><option value="eu" ${f.standard==='eu'?'selected':''}>EU (230V)</option><option value="us" ${f.standard==='us'?'selected':''}>US (110/120V)</option></select></div><div class="filter-group"><label>Type</label><select onchange="setCF('type',this.value)">${optEl('','All Types',tC.counts,f.type)}${optEl('all-in-one','All-in-one',tC.counts,f.type)}${optEl('split-phase','Split-phase',tC.counts,f.type)}${optEl('low-freq','Low-frequency',tC.counts,f.type)}${optEl('power-inv','Power inverter',tC.counts,f.type)}${optEl('batteryless','Batteryless',tC.counts,f.type)}</select></div><div class="filter-group"><label>IP Rating</label><select onchange="setCF('ip',this.value)">${optEl('','All Ratings',ipC.counts,f.ip)}${optEl('ip20','IP20 (Indoor)',ipC.counts,f.ip)}${optEl('ip65','IP65 (Outdoor)',ipC.counts,f.ip)}</select></div><div class="filter-count"><span id="ccnt">\u2014</span> inverters</div></div>`;
-  }
-  if(tab==='controllers'){
-    const tyC=getAvailCounts('controllers','type');
-    return srchHTML+`<div class="catalog-filters"><div class="filter-group"><label>Type</label><select onchange="setCF('type',this.value)">${optEl('','All Types',tyC.counts,f.type)}${optEl('mppt','MPPT',tyC.counts,f.type)}${optEl('pwm','PWM',tyC.counts,f.type)}</select></div><div class="filter-count"><span id="ccnt">\u2014</span> controllers</div></div>`;
-  }
-  if(tab==='lithium'){
-    const svC=getAvailCounts('lithium','voltage');const catC=getAvailCounts('lithium','category');
-    return srchHTML+`<div class="catalog-filters"><div class="filter-group"><label>Voltage</label><select onchange="setCF('voltage',this.value)">${optEl('','All Voltages',svC.counts,f.voltage)}${optEl('12V','12.8V',svC.counts,f.voltage)}${optEl('25V','25.6V',svC.counts,f.voltage)}${optEl('48V','51.2V',svC.counts,f.voltage)}</select></div><div class="filter-group"><label>Battery Category</label><select onchange="setCF('category',this.value)">${optEl('','All Categories',catC.counts,f.category)}${optEl('lead-acid','Lead-Acid Replacement',catC.counts,f.category)}${optEl('residential','Residential Energy Storage',catC.counts,f.category)}${optEl('cells','LiFePO4 Prismatic Cells',catC.counts,f.category)}</select></div><div class="filter-count"><span id="ccnt">\u2014</span> batteries</div></div>`;
-  }
-  if(tab==='ess'){
-    return srchHTML+`<div class="catalog-filters"><div class="filter-group"><label>Standard</label><select onchange="setCF('standard',this.value)"><option value="" ${f.standard===''?'selected':''}>All Standards</option><option value="eu" ${f.standard==='eu'?'selected':''}>EU (230V)</option><option value="us" ${f.standard==='us'?'selected':''}>US (110/120V)</option></select></div><div class="filter-count"><span id="ccnt">\u2014</span> ESS systems</div></div>`;
+  var groupsHTML = '', countLabel = '', totalProducts = 0;
+
+  if (tab === 'inverters') {
+    var stdLS = getLockState('inverters', 'standard');
+    var typeLS = getLockState('inverters', 'type');
+    var ipLS = getLockState('inverters', 'ip');
+
+    // Standard
+    if (!stdLS.hide) {
+      if (stdLS.locked) {
+        f.standard = '';
+        groupsHTML += filterGroupLocked('Standard', lockChip('Standard', stdLS.lockedLabel, tab, 'standard'));
+      } else {
+        var stdC = stdLS.total > 0 ? getAvailCounts('inverters', 'standard') : { counts: { eu: 0, us: 0 }, valMap: { eu: 'EU (230V)', us: 'US (110/120V)' } };
+        groupsHTML += filterGroupSelect('Standard', '<select onchange="setCF(\'standard\',this.value)">' + optEl('', 'All Standards', stdC.counts, f.standard) + optEl('eu', 'EU (230V)', stdC.counts, f.standard) + optEl('us', 'US (110/120V)', stdC.counts, f.standard) + '</select>');
+      }
+    }
+
+    // Type
+    if (!typeLS.hide) {
+      if (typeLS.locked) {
+        f.type = '';
+        groupsHTML += filterGroupLocked('Type', lockChip('Type', typeLS.lockedLabel, tab, 'type'));
+      } else {
+        var tC = getAvailCounts('inverters', 'type');
+        groupsHTML += filterGroupSelect('Type', '<select onchange="setCF(\'type\',this.value)">' + optEl('', 'All Types', tC.counts, f.type) + optEl('all-in-one', 'All-in-one', tC.counts, f.type) + optEl('split-phase', 'Split-phase', tC.counts, f.type) + optEl('low-freq', 'Low-frequency', tC.counts, f.type) + optEl('power-inv', 'Power inverter', tC.counts, f.type) + optEl('batteryless', 'Batteryless', tC.counts, f.type) + '</select>');
+      }
+    }
+
+    // IP Rating
+    if (!ipLS.hide) {
+      if (ipLS.locked) {
+        f.ip = '';
+        groupsHTML += filterGroupLocked('IP Rating', lockChip('IP Rating', ipLS.lockedLabel, tab, 'ip'));
+      } else {
+        var ipC = getAvailCounts('inverters', 'ip');
+        groupsHTML += filterGroupSelect('IP Rating', '<select onchange="setCF(\'ip\',this.value)">' + optEl('', 'All Ratings', ipC.counts, f.ip) + optEl('ip20', 'IP20 (Indoor)', ipC.counts, f.ip) + optEl('ip65', 'IP65 (Outdoor)', ipC.counts, f.ip) + '</select>');
+      }
+    }
+
+    totalProducts = getFiltered().length;
+    countLabel = ' inverters';
   }
 
-  return '';
+  else if (tab === 'controllers') {
+    var tyLS = getLockState('controllers', 'type');
+    if (!tyLS.hide) {
+      if (tyLS.locked) {
+        f.type = '';
+        groupsHTML += filterGroupLocked('Type', lockChip('Type', tyLS.lockedLabel, tab, 'type'));
+      } else {
+        var tyC = getAvailCounts('controllers', 'type');
+        groupsHTML += filterGroupSelect('Type', '<select onchange="setCF(\'type\',this.value)">' + optEl('', 'All Types', tyC.counts, f.type) + optEl('mppt', 'MPPT', tyC.counts, f.type) + optEl('pwm', 'PWM', tyC.counts, f.type) + '</select>');
+      }
+    }
+    totalProducts = getFiltered().length;
+    countLabel = ' controllers';
+  }
+
+  else if (tab === 'lithium') {
+    var svLS = getLockState('lithium', 'voltage');
+    var catLS = getLockState('lithium', 'category');
+
+    if (!svLS.hide) {
+      if (svLS.locked) {
+        f.voltage = '';
+        groupsHTML += filterGroupLocked('Voltage', lockChip('Voltage', svLS.lockedLabel, tab, 'voltage'));
+      } else {
+        var svC = getAvailCounts('lithium', 'voltage');
+        groupsHTML += filterGroupSelect('Voltage', '<select onchange="setCF(\'voltage\',this.value)">' + optEl('', 'All Voltages', svC.counts, f.voltage) + optEl('12V', '12.8V', svC.counts, f.voltage) + optEl('25V', '25.6V', svC.counts, f.voltage) + optEl('48V', '51.2V', svC.counts, f.voltage) + '</select>');
+      }
+    }
+
+    if (!catLS.hide) {
+      if (catLS.locked) {
+        f.category = '';
+        groupsHTML += filterGroupLocked('Battery Category', lockChip('Battery Category', catLS.lockedLabel, tab, 'category'));
+      } else {
+        var catC = getAvailCounts('lithium', 'category');
+        groupsHTML += filterGroupSelect('Battery Category', '<select onchange="setCF(\'category\',this.value)">' + optEl('', 'All Categories', catC.counts, f.category) + optEl('lead-acid', 'Lead-Acid Replacement', catC.counts, f.category) + optEl('residential', 'Residential Energy Storage', catC.counts, f.category) + optEl('cells', 'LiFePO4 Prismatic Cells', catC.counts, f.category) + '</select>');
+      }
+    }
+    totalProducts = getFiltered().length;
+    countLabel = ' batteries';
+  }
+
+  else if (tab === 'ess') {
+    var essLS = getLockState('ess', 'standard');
+    if (!essLS.hide) {
+      if (essLS.locked) {
+        f.standard = '';
+        groupsHTML += filterGroupLocked('Standard', lockChip('Standard', essLS.lockedLabel, tab, 'standard'));
+      } else {
+        var essC = essLS.total > 0 ? getAvailCounts('ess', 'standard') : { counts: { eu: 0, us: 0 }, valMap: { eu: 'EU (230V)', us: 'US (110/120V)' } };
+        groupsHTML += filterGroupSelect('Standard', '<select onchange="setCF(\'standard\',this.value)">' + optEl('', 'All Standards', essC.counts, f.standard) + optEl('eu', 'EU (230V)', essC.counts, f.standard) + optEl('us', 'US (110/120V)', essC.counts, f.standard) + '</select>');
+      }
+    }
+    totalProducts = getFiltered().length;
+    countLabel = ' ESS systems';
+  }
+
+  return srchHTML + '<div class="catalog-filters">' + groupsHTML + '<div class="filter-count"><span id="ccnt">' + totalProducts + '</span>' + countLabel + '</div></div>';
 }
 export function setCF(k,v){try{const tab=state.catalogTab,flt=state.catalogFilters[tab];flt[k]=v;if(k==='search'){renderProductsOnly();const sw=document.querySelector('.search-wrap');if(sw){let btn=sw.querySelector('.search-clear');if(v&&!btn){btn=document.createElement('button');btn.className='search-clear';btn.title='Clear search';btn.innerHTML='&times;';btn.onclick=clearSearch;sw.appendChild(btn)}else if(!v&&btn){btn.remove()}}return}if(k==='sort'){renderProductsOnly();return}renderCat()}catch(e){console.error('setCF error:',e)}}
 export function clearSearch(){const f=state.catalogFilters[state.catalogTab];f.search='';renderCat();}

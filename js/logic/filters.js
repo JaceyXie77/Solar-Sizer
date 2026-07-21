@@ -150,11 +150,34 @@ export function getAvailCounts(tab, excludeKey) {
 
 export function optEl(val, label, counts, currentVal, realTotal) {
   const c = counts[val] || 0;
-  const dis = c === 0 && val !== '';
+  // Hide zero-count non-All options entirely
+  if (c === 0 && val !== '') return '';
   const sel = currentVal === val ? ' selected' : '';
   const total = realTotal !== undefined ? realTotal : Object.values(counts).reduce((s, v) => s + v, 0);
-  const suffix = val === '' ? ' (' + total + ')' : c > 0 ? ' <span class="opt-count">(' + c + ')</span>' : ' <span class="opt-count opt-unavail">(0)</span>';
-  return '<option value="' + val + '"' + sel + (dis ? ' disabled' : '') + '>' + label + suffix + '</option>';
+  const suffix = val === '' ? ' (' + total + ')' : ' <span class="opt-count">(' + c + ')</span>';
+  return '<option value="' + val + '"' + sel + '>' + label + suffix + '</option>';
+}
+
+// Check if a filter dimension should be locked (only 1 non-All option with count > 0)
+// Returns { locked, total, lockedVal, lockedLabel } or null if shouldHide (all options zero)
+export function getLockState(tab, key) {
+  const { counts, valMap, total } = getAvailCounts(tab, key);
+  const visibleOpts = Object.entries(counts).filter(([k, v]) => k !== '' && v > 0);
+  const nonZeroCount = visibleOpts.length;
+
+  // All-zero: no results for this dimension → hide the entire row
+  if (total === 0 && nonZeroCount === 0) {
+    return { locked: false, total: 0, nonZeroCount: 0, hide: true, lockedVal: '', lockedLabel: '' };
+  }
+
+  // Single non-All option left → lock
+  if (nonZeroCount === 1) {
+    const [val, cnt] = visibleOpts[0];
+    return { locked: true, total, nonZeroCount, hide: false, lockedVal: val, lockedLabel: valMap[val] || val };
+  }
+
+  // Normal state
+  return { locked: false, total, nonZeroCount, hide: false, lockedVal: '', lockedLabel: '' };
 }
 
 export function getFiltered() {
@@ -164,6 +187,7 @@ export function getFiltered() {
     res = [...CAT_INV_EU, ...CAT_INV_US];
     if (f.standard) res = applySingleFilter('inverters', 'standard', f.standard, res);
     if (f.type) res = applySingleFilter('inverters', 'type', f.type, res);
+    if (f.ip) res = applySingleFilter('inverters', 'ip', f.ip, res);
   }
   if (t === 'lithium') {
     res = [...CAT_BAT, ...CAT_CELLS];
